@@ -7,7 +7,7 @@
 
 </header>
 <body onload="lightStarter()">
-<h2>Choose your destination.</h2>
+<h2>Выберите этаж...</h2>
 <button id="button1" onclick="floorNumb1()">1 Этаж.</button>
 <button id="button2" onclick="floorNumb2()">2 Этаж.</button>
 <button id="button3" onclick="floorNumb3()">3 Этаж.</button>
@@ -15,7 +15,9 @@
 <button id="button5" onclick="floorNumb5()">5 Этаж.</button>
 <button id="button6" onclick="floorNumb6()">6 Этаж.</button>
 <button id="button7" onclick="floorNumb7()">7 Этаж.</button>
-<p id="paragraph"></p>
+<div id="alert">
+    <h2>Лифт прибыл на этаж!</h2>
+</div>
 <script type="text/javascript">
     var floorNumber;
 
@@ -27,18 +29,32 @@
             contentType: "application/json",
             data: JSON.stringify({
                 message: '900',
-                id: 900
+                id: 900,
+                exitStatus: 900
             }),
             success: function (data) {
-                //console.log(data);
                 floorNumber = data.message;
+                var exitNotify = data.exitStatus;
                 light();
+                if(exitNotify === '500'){
+                    greenLight()}
+                else {
+                    redLight()
+                }
             }
         });
     }
 
 
     setInterval(lightStarter, 100);
+
+    function redLight() {
+        document.getElementById("alert").style.display = "none";
+    }
+
+    function greenLight() {
+        document.getElementById("alert").style.display = "block";
+    }
 
     function light() {
 
@@ -132,10 +148,7 @@
             data: JSON.stringify({
                 message: '1',
                 id: 1
-            }),
-            success: function (data) {
-                console.log(data);
-            }
+            })
         });
     }
 
@@ -148,10 +161,7 @@
             data: JSON.stringify({
                 message: '2',
                 id: 2
-            }),
-            success: function (data) {
-                console.log(data);
-            }
+            })
         });
     }
 
@@ -164,10 +174,7 @@
             data: JSON.stringify({
                 message: '3',
                 id: 3
-            }),
-            success: function (data) {
-                console.log(data);
-            }
+            })
         });
     }
 
@@ -180,10 +187,7 @@
             data: JSON.stringify({
                 message: '4',
                 id: 4
-            }),
-            success: function (data) {
-                console.log(data);
-            }
+            })
         });
     }
 
@@ -196,10 +200,7 @@
             data: JSON.stringify({
                 message: '5',
                 id: 5
-            }),
-            success: function (data) {
-                console.log(data);
-            }
+            })
         });
     }
 
@@ -212,10 +213,7 @@
             data: JSON.stringify({
                 message: '6',
                 id: 6
-            }),
-            success: function (data) {
-                console.log(data);
-            }
+            })
         });
     }
 
@@ -228,10 +226,7 @@
             data: JSON.stringify({
                 message: '7',
                 id: 7
-            }),
-            success: function (data) {
-                console.log(data);
-            }
+            })
         });
     }
 </script>

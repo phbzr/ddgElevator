@@ -33,3 +33,6 @@ h2 {
     text-shadow: 0 8px 10px #c4b59d, 0 0px 0px #fff;
     letter-spacing: -4px;
 }
+#alert{
+    display: none;
+}

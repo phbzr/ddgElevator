@@ -4,6 +4,24 @@ package com.ddg.task.service;
 public class Elevator {
     private static int currentFloor = 1;
     private String message;
+    private String exitStatus;
+    private static String checker = "300";
+
+    public static String getChecker() {
+        return checker;
+    }
+
+    public static void setChecker(String checker) {
+        Elevator.checker = checker;
+    }
+
+    public void setExitStatus(String exitStatus) {
+        this.exitStatus = exitStatus;
+    }
+
+    public String getExitStatus() {
+        return exitStatus;
+    }
 
     public Elevator() {
 
@@ -16,10 +34,6 @@ public class Elevator {
     public static void setCurrentFloor(int currentFloor) {
         Elevator.currentFloor = currentFloor;
     }
-
-//    public void setDestination(HelloWorldObject object){
-//        evc.addDestination(object.getId());
-//    }
 
     public String getMessage() {
         return message;
