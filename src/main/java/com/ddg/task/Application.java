@@ -20,7 +20,7 @@ public class Application extends SpringBootServletInitializer {
     }
 
     @Bean
-    public ElevatorControlPanel cxf() {
+    public ElevatorControlPanel elevatorControlPanel() {
         return new ElevatorControlPanel();
     }
 

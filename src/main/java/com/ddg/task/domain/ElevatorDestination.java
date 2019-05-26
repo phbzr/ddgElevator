@@ -1,19 +1,18 @@
 package com.ddg.task.domain;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.TreeSet;
 
 public class ElevatorDestination {
-    private static Queue<Integer> waiters = new LinkedList<>();
+    private static TreeSet<Integer> waiters = new TreeSet<>();
 
     public ElevatorDestination() {
     }
 
-    public static Queue<Integer> getWaiters() {
+    public static TreeSet<Integer> getWaiters() {
         return waiters;
     }
 
-    public static void setWaiters(Queue<Integer> waiters) {
+    public static void setWaiters(TreeSet<Integer> waiters) {
         ElevatorDestination.waiters = waiters;
     }
 

@@ -19,7 +19,7 @@ public class RestControllerClass {
     }
     //Отдаем текущий этаж
     @PostMapping("/api/light")
-    public ResponseEntity<Elevator> currentFloorStatus(@RequestBody ResponseObject object) {
+    public ResponseEntity<Elevator> currentFloorStatus() {
         Elevator responseObject = new Elevator();
         responseObject.setMessage("");
         responseObject.setExitStatus(Elevator.getChecker());

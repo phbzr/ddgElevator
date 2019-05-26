@@ -1,6 +1,5 @@
 package com.ddg.task.service;
 
-import java.util.Queue;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
@@ -14,12 +13,12 @@ public class ElevatorControlPanel {
     public ElevatorControlPanel() {
     }
 
-    public void addDestination(Queue<Integer> queue) {
+    public void addDestination(TreeSet<Integer> queue) {
 
 
         int dest = -1;
         if (queue.size() > 0) {
-            dest = queue.poll();
+            dest = queue.pollFirst();
         }
 
         if (dest == Elevator.getCurrentFloor() || dest == last) {
@@ -29,7 +28,7 @@ public class ElevatorControlPanel {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            queue.poll();
+            queue.pollFirst();
             Elevator.setChecker("300");
         }
 
