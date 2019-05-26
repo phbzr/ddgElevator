@@ -42,11 +42,4 @@ public class Elevator {
     public void setMessage(String message) {
         this.message = Integer.toString(currentFloor);
     }
-
-    @Override
-    public String toString() {
-        return "Elevator{" +
-                "currentFloor=" + currentFloor +
-                '}';
-    }
 }

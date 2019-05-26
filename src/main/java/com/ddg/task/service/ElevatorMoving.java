@@ -1,5 +1,7 @@
 package com.ddg.task.service;
 
+import com.ddg.task.domain.ElevatorDestination;
+
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
@@ -23,22 +25,22 @@ public class ElevatorMoving {
 
     private void elevatorDown(TreeSet<Integer> local) {
         try {
-        while (Elevator.getCurrentFloor() != local.last() && Elevator.getCurrentFloor() < 8 && Elevator.getCurrentFloor() > 0) {
-            System.out.println("Текущий этаж: " + Elevator.getCurrentFloor());
+            while (Elevator.getCurrentFloor() != local.last() && Elevator.getCurrentFloor() < 8 && Elevator.getCurrentFloor() > 0) {
+                if (ElevatorDestination.getWaiters().contains(Elevator.getCurrentFloor())) {
+                    exitSender();
+                    ElevatorDestination.getWaiters().remove(Elevator.getCurrentFloor());
+                }
+                System.out.println("Текущий этаж: " + Elevator.getCurrentFloor());
+                TimeUnit.SECONDS.sleep(9);
 
-                TimeUnit.SECONDS.sleep(5);
+                int x = Elevator.getCurrentFloor();
+                x--;
+                Elevator.setCurrentFloor(x);
+            }
 
-            int x = Elevator.getCurrentFloor();
-            x--;
-            Elevator.setCurrentFloor(x);
-        }
-
-        Elevator.setCurrentFloor(Elevator.getCurrentFloor());
-        Elevator.setChecker("500");
-        System.out.println("Прибыли на " + Elevator.getCurrentFloor());
-        local.pollLast();
-        TimeUnit.SECONDS.sleep(4);
-        Elevator.setChecker("300");
+            Elevator.setCurrentFloor(Elevator.getCurrentFloor());
+            exitSender();
+            local.pollLast();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -46,26 +48,34 @@ public class ElevatorMoving {
 
     private void elevatorUp(TreeSet<Integer> local) {
         try {
-        while (Elevator.getCurrentFloor() != local.first() && Elevator.getCurrentFloor() < 8 && Elevator.getCurrentFloor() > 0) {
+            while (Elevator.getCurrentFloor() != local.first() && Elevator.getCurrentFloor() < 8 && Elevator.getCurrentFloor() > 0) {
 
-            System.out.println("Текущий этаж: " + Elevator.getCurrentFloor());
+                if (ElevatorDestination.getWaiters().contains(Elevator.getCurrentFloor())) {
+                    exitSender();
+                    ElevatorDestination.getWaiters().remove(Elevator.getCurrentFloor());
+                }
 
-                TimeUnit.SECONDS.sleep(5);
+                System.out.println("Текущий этаж: " + Elevator.getCurrentFloor());
+                TimeUnit.SECONDS.sleep(9);
+                int x = Elevator.getCurrentFloor();
+                x++;
+                Elevator.setCurrentFloor(x);
 
-            int x = Elevator.getCurrentFloor();
-            x++;
-            Elevator.setCurrentFloor(x);
+            }
 
-        }
-        Elevator.setCurrentFloor(Elevator.getCurrentFloor());
-        Elevator.setChecker("500");
-        System.out.println("Прибыли на " + Elevator.getCurrentFloor());
-        local.pollLast();
-        TimeUnit.SECONDS.sleep(4);
-        Elevator.setChecker("300");
+            Elevator.setCurrentFloor(Elevator.getCurrentFloor());
+            exitSender();
+            local.pollLast();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void exitSender() throws InterruptedException {
+        Elevator.setChecker("500");
+        System.out.println("Прибыли на " + Elevator.getCurrentFloor());
+        TimeUnit.SECONDS.sleep(4);
+        Elevator.setChecker("300");
     }
 
 }

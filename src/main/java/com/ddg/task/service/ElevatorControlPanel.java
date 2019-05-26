@@ -1,7 +1,5 @@
 package com.ddg.task.service;
 
-import com.ddg.task.domain.ElevatorDestination;
-
 import java.util.Queue;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
@@ -17,17 +15,22 @@ public class ElevatorControlPanel {
     }
 
     public void addDestination(Queue<Integer> queue) {
-        System.out.println("tyt");
+
+
         int dest = -1;
-        if (ElevatorDestination.getWaiters().size() > 0) {
+        if (queue.size() > 0) {
             dest = queue.poll();
-            System.out.println(ElevatorDestination.getWaiters());
         }
 
         if (dest == Elevator.getCurrentFloor() || dest == last) {
-            System.out.println(dest);
-            System.out.println("надо ли 1 " + Elevator.getCurrentFloor());
-            return;
+            Elevator.setChecker("500");
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            queue.poll();
+            Elevator.setChecker("300");
         }
 
         if (dest > 0 && dest < 8) {
@@ -38,11 +41,7 @@ public class ElevatorControlPanel {
                 localUp.add(dest);
             }
             last = dest;
-            System.out.println(localUp.size() + " " + localDown.size());
-
             elv.work();
-
-
         }
         while (queue.size() == 0) {
             try {
