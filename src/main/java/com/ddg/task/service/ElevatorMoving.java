@@ -1,23 +1,41 @@
 package com.ddg.task.service;
 
-import com.ddg.task.domain.ElevatorDestination;
-
+import com.ddg.task.domain.ElevatorStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 
 public class ElevatorMoving {
+    @Autowired
+    private ElevatorDestination elevatorDestination;
 
+    @Autowired
+    private ElevatorControlPanel elevatorControlPanel;
+
+    @Autowired
+    private ElevatorStatus elevatorStatus;
+
+    @Autowired
+    private Elevator elevator;
+
+    public ElevatorMoving() {
+    }
+    /*
+        Взависимости от очередей запускаем подходящий метод
+     */
     public void work() {
 
-        if ((Elevator.getCurrentFloor() == 1 || ElevatorControlPanel.localDown.size() == 0) && ElevatorControlPanel.localUp.size() > 0) {
-            while (ElevatorControlPanel.localUp.size() > 0) {
-                elevatorUp(ElevatorControlPanel.localUp);
+        if ((elevator.getCurrentFloor() == 1 || elevatorControlPanel.getLocalDown().size() == 0) && elevatorControlPanel.getLocalUp().size() > 0) {
+            //Не даем уйти в другой метод , пока не опустошим список
+            while (elevatorControlPanel.getLocalUp().size() > 0) {
+                elevatorUp(elevatorControlPanel.getLocalUp());
             }
-        } else if (Elevator.getCurrentFloor() > 1 && ElevatorControlPanel.localDown.size() > 0) {
 
-            while (ElevatorControlPanel.localDown.size() > 0) {
-                elevatorDown(ElevatorControlPanel.localDown);
+        } else if (elevator.getCurrentFloor() > 1 && elevatorControlPanel.getLocalDown().size() > 0) {
+            //Не даем уйти в другой метод , пока не опустошим список
+            while (elevatorControlPanel.getLocalDown().size() > 0) {
+                elevatorDown(elevatorControlPanel.getLocalDown());
             }
         }
 
@@ -25,20 +43,28 @@ public class ElevatorMoving {
 
     private void elevatorDown(TreeSet<Integer> local) {
         try {
-            while (Elevator.getCurrentFloor() != local.last() && Elevator.getCurrentFloor() < 8 && Elevator.getCurrentFloor() > 0) {
-                if (ElevatorDestination.getWaiters().contains(Elevator.getCurrentFloor())) {
+            //Проверяем, чтобы лишний раз не уехать за допустимые значения
+            //Процес движения
+            while (elevator.getCurrentFloor() != local.last() && elevator.getCurrentFloor() < 8 && elevator.getCurrentFloor() > 0) {
+                //Если текущий этаж содержится в основной очереди, вызываем остановку
+                if (elevatorDestination.getWaiters().contains(elevator.getCurrentFloor())) {
                     exitSender();
-                    ElevatorDestination.getWaiters().remove(Elevator.getCurrentFloor());
+                    elevatorDestination.getWaiters().remove(elevator.getCurrentFloor());
                 }
-                System.out.println("Текущий этаж: " + Elevator.getCurrentFloor());
-                TimeUnit.SECONDS.sleep(9);
 
-                int x = Elevator.getCurrentFloor();
+                System.out.println("Текущий этаж: " + elevator.getCurrentFloor());
+                TimeUnit.SECONDS.sleep(10);//Движение между этажами
+                //берем текущий этаж уменьшаем и сетаем в текущий этаж
+                int x = elevator.getCurrentFloor();
                 x--;
-                Elevator.setCurrentFloor(x);
+                elevator.setCurrentFloor(x);
             }
-
-            Elevator.setCurrentFloor(Elevator.getCurrentFloor());
+            /*
+            Текущий этаж равен пункту назначения из локальной очереди
+            сетаем его вызываем оповещение
+            удаляем из очереди
+             */
+            elevator.setCurrentFloor(elevator.getCurrentFloor());
             exitSender();
             local.pollLast();
         } catch (InterruptedException e) {
@@ -48,34 +74,41 @@ public class ElevatorMoving {
 
     private void elevatorUp(TreeSet<Integer> local) {
         try {
-            while (Elevator.getCurrentFloor() != local.first() && Elevator.getCurrentFloor() < 8 && Elevator.getCurrentFloor() > 0) {
-
-                if (ElevatorDestination.getWaiters().contains(Elevator.getCurrentFloor())) {
+            //Проверяем, чтобы лишний раз не уехать за допустимые значения
+            //Процес движения
+            while (elevator.getCurrentFloor() != local.first() && elevator.getCurrentFloor() < 8 && elevator.getCurrentFloor() > 0) {
+                //Если текущий этаж содержится в основной очереди, вызываем остановку
+                if (elevatorDestination.getWaiters().contains(elevator.getCurrentFloor())) {
                     exitSender();
-                    ElevatorDestination.getWaiters().remove(Elevator.getCurrentFloor());
+                    elevatorDestination.getWaiters().remove(elevator.getCurrentFloor());
                 }
 
-                System.out.println("Текущий этаж: " + Elevator.getCurrentFloor());
-                TimeUnit.SECONDS.sleep(9);
-                int x = Elevator.getCurrentFloor();
+                System.out.println("Текущий этаж: " + elevator.getCurrentFloor());
+                TimeUnit.SECONDS.sleep(10);//Движение между этажами
+                //берем текущий этаж увеличиваем и сетаем в текущий этаж
+                int x = elevator.getCurrentFloor();
                 x++;
-                Elevator.setCurrentFloor(x);
+                elevator.setCurrentFloor(x);
 
             }
-
-            Elevator.setCurrentFloor(Elevator.getCurrentFloor());
+            /*
+            Текущий этаж равен пункту назначения из локальной очереди
+            Сетаем его вызываем оповещение
+            Удаляем из очереди
+             */
+            elevator.setCurrentFloor(elevator.getCurrentFloor());
             exitSender();
-            local.pollLast();
+            local.pollFirst();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-
+    //вызываем оповещения
     public void exitSender() throws InterruptedException {
-        Elevator.setChecker("500");
-        System.out.println("Прибыли на " + Elevator.getCurrentFloor());
+        elevatorStatus.setChecker("500");
+        System.out.println("Прибыли на " + elevator.getCurrentFloor());
         TimeUnit.SECONDS.sleep(4);
-        Elevator.setChecker("300");
+        elevatorStatus.setChecker("300");
     }
 
 }

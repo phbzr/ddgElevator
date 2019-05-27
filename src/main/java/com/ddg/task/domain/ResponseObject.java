@@ -1,6 +1,5 @@
 package com.ddg.task.domain;
 
-
 public class ResponseObject {
 
     private String message;
@@ -9,6 +8,7 @@ public class ResponseObject {
     public ResponseObject() {
 
     }
+
     public String getMessage() {
         return message;
     }
