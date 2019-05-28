@@ -1,6 +1,7 @@
 package com.ddg.task.service;
 
 import com.ddg.task.domain.ElevatorStatus;
+import com.ddg.task.model.Elevator;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;

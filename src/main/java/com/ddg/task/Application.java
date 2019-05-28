@@ -1,10 +1,11 @@
 package com.ddg.task;
 
 import com.ddg.task.service.ElevatorDestination;
-import com.ddg.task.service.Elevator;
+import com.ddg.task.model.Elevator;
 import com.ddg.task.service.ElevatorControlPanel;
 import com.ddg.task.service.ElevatorMoving;
 import com.ddg.task.domain.ElevatorStatus;
+import com.ddg.task.service.ElevatorState;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -21,6 +22,11 @@ public class Application extends SpringBootServletInitializer {
         ElevatorDestination elD = context.getBean(ElevatorDestination.class);
         context.getBean(ElevatorControlPanel.class).addDestination(elD.getWaiters());
 
+    }
+
+    @Bean
+    public ElevatorState elevatorState(){
+        return new ElevatorState();
     }
 
     @Bean

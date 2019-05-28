@@ -1,8 +1,8 @@
 package com.ddg.task.service;
 
+import com.ddg.task.model.Elevator;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.TreeSet;
-import java.util.concurrent.TimeUnit;
 
 public class ElevatorControlPanel {
 
@@ -14,6 +14,11 @@ public class ElevatorControlPanel {
     private int dest = -1; //конечная точка
     private TreeSet<Integer> localUp = new TreeSet<>(); //очередь вверх
     private TreeSet<Integer> localDown = new TreeSet<>();// очередь вниз
+    private final Object lock = new Object();
+
+    public Object getLock() {
+        return lock;
+    }
 
     public TreeSet<Integer> getLocalUp() {
         return localUp;
@@ -70,16 +75,15 @@ public class ElevatorControlPanel {
         /*
         ждем появления элементов в очереди
         */
-        while (queue.size() == 0) {
-            try {
-                TimeUnit.MILLISECONDS.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        synchronized (lock) {
+            if (queue.size() == 0) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+            addDestination(queue);
         }
-        /*
-        передаем новую очередь в метод
-        */
-        addDestination(queue);
     }
 }

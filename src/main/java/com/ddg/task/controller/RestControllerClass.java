@@ -1,8 +1,9 @@
 package com.ddg.task.controller;
 
+import com.ddg.task.service.ElevatorControlPanel;
 import com.ddg.task.service.ElevatorDestination;
-import com.ddg.task.service.Elevator;
 import com.ddg.task.domain.ElevatorStatus;
+import com.ddg.task.service.ElevatorState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,25 +21,30 @@ public class RestControllerClass {
     private ElevatorStatus elevatorStatus;
 
     @Autowired
-    private Elevator elevator;
+    private ElevatorState elevatorState;
 
-
+    @Autowired
+    private ElevatorControlPanel elevatorControlPanel;
     /*
         Получаем пункт назначения
     */
     @PostMapping("/api/myrequest")
     public void getDestination(@RequestBody ResponseObject object) {
+        System.out.println("pressed");
         elevatorDestination.getWaiters().add(object.getId());
+        synchronized (elevatorControlPanel.getLock()) {
+            elevatorControlPanel.getLock().notify();
+        }
     }
     /*
         Отдаем текущий этаж
         и статус остановки
     */
     @PostMapping("/api/light")
-    public ResponseEntity<Elevator> currentFloorStatus() {
-        elevator.setMessage("");
-        elevator.setExitStatus(elevatorStatus.getChecker());
-        return new ResponseEntity<Elevator>(elevator, HttpStatus.OK);
+    public ResponseEntity<ElevatorState> currentFloorStatus() {
+        elevatorState.setMessage("");
+        elevatorState.setExitStatus(elevatorStatus.getChecker());
+        return new ResponseEntity<>(elevatorState, HttpStatus.OK);
     }
 
 }
