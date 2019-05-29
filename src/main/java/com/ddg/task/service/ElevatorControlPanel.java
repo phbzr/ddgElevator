@@ -51,13 +51,6 @@ public class ElevatorControlPanel {
             dest = queue.pollFirst();
         }
          /*
-        если пункт назначения = текущему этажу
-        удаляем из главное очереди, до распределения
-        */
-        if (dest == elevator.getCurrentFloor()) {
-            queue.pollFirst();
-        }
-         /*
         проверяем пункт назначения(1-7 этаж)
         рапределяем по очередям вверх\вниз
         назначаем предыдущий этаж

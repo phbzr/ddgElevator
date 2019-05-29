@@ -28,9 +28,9 @@ public class RestControllerClass {
     /*
         Получаем пункт назначения
     */
-    @PostMapping("/api/myrequest")
+    @PostMapping("/api/destination")
     public void getDestination(@RequestBody ResponseObject object) {
-        System.out.println("pressed");
+
         elevatorDestination.getWaiters().add(object.getId());
         synchronized (elevatorControlPanel.getLock()) {
             elevatorControlPanel.getLock().notify();
